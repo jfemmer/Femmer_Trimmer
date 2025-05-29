@@ -14,13 +14,13 @@
       color: #2e2e2e;
     }
 
-    header {
-      background-color: #216c2a;
-      padding: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-    }
+   header {
+    background-color: #216c2a;
+    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 
     header img {
       max-width: 110px;
@@ -75,13 +75,83 @@
       background-color: #216c2a;
       color: white;
     }
+
+    .hero a:hover {
+      background-color: #1c5d24;
+    }
+
+    .hero {
+      padding: 60px 20px;
+      text-align: center;
+      position: relative;
+    }
+
+    .quote-button {
+      background-color: #ffffff;
+      color: #216c2a;
+      padding: 12px 24px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      transition: background-color 0.3s, transform 0.2s;
+    }
+    .quote-button:hover {
+      background-color: #e2f4e6;
+      transform: scale(1.05);
+    }
+
+.gallery-banner {
+  background-color: #f9fff9;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.gallery-banner h2 {
+  color: #1c5d24;
+  margin-bottom: 20px;
+  font-size: 2rem;
+}
+
+.gallery-scroll {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  gap: 16px;
+  padding: 10px 0;
+}
+
+.gallery-scroll::-webkit-scrollbar {
+  display: none; /* Hide scrollbar on WebKit browsers */
+}
+
+.gallery-scroll img {
+  height: 200px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  object-fit: cover;
+}
   </style>
 </head>
 <body>
 
   <header>
     <img src="images/Logo.png" alt="Femmer Trimmer Logo">
+    <a href="request_quote.html" class="quote-button">Request a Free Quote</a>
   </header>
+
+  <section class="gallery-banner">
+  <h2>Our Work in Action</h2>
+  <div class="gallery-scroll">
+    <img src="images/lawn1.jpg" alt="Freshly mowed lawn">
+    <img src="images/lawn2.jpg" alt="Clean edged sidewalk">
+    <img src="images/lawn3.jpg" alt="Yard after cleanup">
+    <img src="images/lawn4.jpg" alt="Before and after trimming">
+    <img src="images/lawn5.jpg" alt="Neatly trimmed bushes">
+  </div>
+</section>
 
   <section class="hero">
     <h1>Welcome to Femmer Trimmer</h1>
