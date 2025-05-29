@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Femmer Trimmer Admin Dashboard</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f8f5;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2b7a2b;
+    }
+
+    .section {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 1000px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    #calendar {
+      max-width: 100%;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #d1e7dd;
+    }
+  </style>
+</head>
+<body>
+  <h1>Femmer Trimmer Admin Dashboard</h1>
+
+  <div class="section">
+    <h2>📅 Job Calendar</h2>
+    <div id="calendar"></div>
+  </div>
+
+  <div class="section">
+    <h2>📋 Today's Schedule</h2>
+    <ul id="todaySchedule"></ul>
+  </div>
+
+  <div class="section">
+    <h2>➕ Add New Job</h2>
+    <form id="jobForm">
+      <label>Name:<br><input type="text" id="jobName"></label><br><br>
+      <label>Title:<br><input type="text" id="jobTitle" required></label><br><br>
+      <label>Start Date & Time:<br><input type="datetime-local" id="jobStart" required></label><br><br>
+      <label>Property Size (sq ft):<br><input type="number" id="propertySize"></label><br><br>
+      <label>Address:<br><input type="text" id="jobAddress"></label><br><br>
+      <label>Notes:<br><textarea id="jobNotes"></textarea></label><br><br>
+      <label>Repeat:<br>
+        <select id="jobRepeat">
+          <option value="none">None</option>
+          <option value="weekly">Weekly</option>
+          <option value="biweekly">Bi-weekly</option>
+          <option value="monthly">Monthly</option>
+        </select>
+      </label><br><br>
+      <button type="submit">Add Job</button>
+    </form>
+  </div>
+
+  <div class="section">
+    <h2>📨 Quote Requests</h2>
+    <table id="quoteTable">
+      <thead>
+        <tr><th>Name</th><th>Service</th><th>Date</th><th>Notes</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      const calendarEl = document.getElementById('calendar');
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        height: 650,
+        events: async function(fetchInfo, successCallback, failureCallback) {
+          try {
+            const res = await fetch('https://femmer_trimmer/api/jobs');
+            const events = await res.json();
+            successCallback(events);
+          } catch (error) {
+            failureCallback(error);
+          }
+        }
+      });
+      calendar.render();
+
+      // Load quote requests
+      const res = await fetch('https://femmer_trimmer/api/quotes');
+      const data = await res.json();
+      const tbody = document.querySelector('#quoteTable tbody');
+      data.forEach(q => {
+        const row = `
+          <tr>
+            <td>${q.name}</td>
+            <td>${q.requestedService}</td>
+            <td>${new Date(q.submittedAt).toLocaleDateString()}</td>
+            <td>${q.notes}</td>
+          </tr>`;
+        tbody.innerHTML += row;
+      });
+
+      // Load today's schedule
+      const jobsRes = await fetch('https://femmer_trimmer/api/jobs');
+      const allJobs = await jobsRes.json();
+      const today = new Date().toISOString().slice(0, 10);
+      const todayList = document.getElementById('todaySchedule');
+
+      allJobs.forEach(job => {
+        if (job.start && job.start.slice(0, 10) === today) {
+          const li = document.createElement('li');
+          li.textContent = `${job.title} - ${new Date(job.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} @ ${job.address || 'Unknown address'}${job.name ? ' (for ' + job.name + ')' : ''}`;
+          todayList.appendChild(li);
+        }
+      });
+
+      // Handle job form submission
+      document.getElementById('jobForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById('jobName').value;
+        const title = document.getElementById('jobTitle').value;
+        const start = document.getElementById('jobStart').value;
+        const notes = document.getElementById('jobNotes').value;
+        const repeat = document.getElementById('jobRepeat').value;
+        const address = document.getElementById('jobAddress').value;
+        const propertySize = document.getElementById('propertySize').value;
+
+        const jobs = [{ title, start, notes, status: "Scheduled", name, address, propertySize }];
+
+        if (repeat !== 'none') {
+          const interval = { weekly: 7, biweekly: 14, monthly: 30 }[repeat];
+          for (let i = 1; i <= 5; i++) {
+            const newStart = new Date(start);
+            newStart.setDate(newStart.getDate() + i * interval);
+            jobs.push({
+              title,
+              start: newStart.toISOString(),
+              notes,
+              status: "Scheduled",
+              name,
+              address,
+              propertySize
+            });
+          }
+        }
+
+        for (const job of jobs) {
+          await fetch('https://femmer_trimmer/api/jobs', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(job)
+          });
+        }
+
+        alert("Job(s) added!");
+        location.reload();
+      });
+    });
+  </script>
+</body>
+</html>
