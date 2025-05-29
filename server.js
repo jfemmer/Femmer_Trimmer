@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const app = express();
+const apiBase = 'https://femmer_trimmer-name.up.railway.app';
 
 // Middleware
 app.use(cors());
@@ -58,6 +59,41 @@ app.post('/api/quote', async (req, res) => {
   } catch (err) {
     console.error('❌ Error saving quote request:', err);
     res.status(500).json({ message: 'Server error. Please try again later.' });
+  }
+});
+
+const jobSchema = new mongoose.Schema({
+  title: String,
+  start: String,
+  notes: String,
+  status: String,
+  name: String,
+  address: String,
+  propertySize: Number
+}, { collection: 'jobs' });
+
+const Job = mongoose.model('Job', jobSchema);
+
+// Save a new job
+app.post('/api/jobs', async (req, res) => {
+  try {
+    const job = new Job(req.body);
+    await job.save();
+    res.status(201).json(job);
+  } catch (error) {
+    console.error('❌ Error saving job:', error);
+    res.status(500).json({ message: 'Failed to save job.' });
+  }
+});
+
+// Get all jobs
+app.get('/api/jobs', async (req, res) => {
+  try {
+    const jobs = await Job.find();
+    res.status(200).json(jobs);
+  } catch (error) {
+    console.error('❌ Error fetching jobs:', error);
+    res.status(500).json({ message: 'Failed to fetch jobs.' });
   }
 });
 
