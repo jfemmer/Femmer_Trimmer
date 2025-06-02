@@ -4,57 +4,175 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Femmer Trimmer Admin Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css">
   <style>
+    :root {
+      --primary: #2b7a2b;
+      --background: #f4f8f5;
+      --card-bg: #ffffff;
+      --accent: #d1e7dd;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f8f5;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--background);
       margin: 0;
-      padding: 20px;
+      padding: 0;
       color: #333;
     }
 
-    h1 {
+    header {
+      background: var(--primary);
+      color: white;
+      padding: 1rem 2rem;
       text-align: center;
-      color: #2b7a2b;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .container {
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
     .section {
-      background: white;
+      background: var(--card-bg);
       border-radius: 12px;
-      padding: 20px;
-      margin: 20px auto;
-      max-width: 1000px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
 
-    #calendar {
-      max-width: 100%;
+    h2 {
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    form label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    form input, form textarea, form select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+
+    button[type="submit"] {
+      background: var(--primary);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button[type="submit"]:hover {
+      background: #256b25;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
-    }
-
-    table, th, td {
-      border: 1px solid #ccc;
+      margin-top: 1rem;
     }
 
     th, td {
-      padding: 10px;
+      padding: 0.75rem;
       text-align: left;
+      border: 1px solid #ccc;
     }
 
     th {
-      background-color: #d1e7dd;
+      background-color: var(--accent);
     }
+
+    #calendar {
+  max-width: 100%;
+  overflow: hidden; /* prevent scrollbars */
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.fc {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 10px;
+}
+
+.fc-toolbar-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2b7a2b;
+}
+
+.fc-button {
+  background: #2b7a2b !important;
+  border: none !important;
+  color: white !important;
+  border-radius: 6px !important;
+  padding: 0.5rem 0.75rem !important;
+}
+
+.fc-button:hover {
+  background: #256b25 !important;
+}
+
+.checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.checkbox-group label {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;     /* 👈 align content to the left */
+  width: 200px;
+  height: 48px;
+  background: #f2f2f2;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  padding: 0 12px;
+  gap: 10px;                       /* 👈 space between checkbox and text */
+  overflow: hidden;
+  transition: background 0.2s;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.checkbox-group label:hover {
+  background: #e0e0e0;
+}
+
+.checkbox-group input[type="checkbox"] {
+  transform: scale(1.1);
+  margin: 0;                       /* 👈 ensure consistent spacing */
+  vertical-align: middle;         /* optional backup for older browsers */
+}
+
   </style>
 </head>
 <body>
   <h1>Femmer Trimmer Admin Dashboard</h1>
-
+<div class="container">
   <div class="section">
     <h2>📅 Job Calendar</h2>
     <div id="calendar"></div>
@@ -69,8 +187,53 @@
     <h2>➕ Add New Job</h2>
     <form id="jobForm">
       <label>Name:<br><input type="text" id="jobName"></label><br><br>
-      <label>Title:<br><input type="text" id="jobTitle" required></label><br><br>
-      <label>Start Date & Time:<br><input type="datetime-local" id="jobStart" required></label><br><br>
+      <label>Service Type:</label>
+      <div id="jobServices" class="checkbox-group">
+        <label><input type="checkbox" name="services" value="Bush Trimming"> Bush Trimming</label>
+        <label><input type="checkbox" name="services" value="Gutter Cleaning"> Gutter Cleaning</label>
+        <label><input type="checkbox" name="services" value="Mowing and Trimming"> Mowing and Trimming</label>
+        <label><input type="checkbox" name="services" value="Power Washing"> Power Washing</label>
+        <label><input type="checkbox" name="services" value="Edging"> Edging</label>
+        <label><input type="checkbox" name="services" value="Leaf Cleanup"> Leaf Cleanup</label>
+        <label><input type="checkbox" name="services" value="Mulching"> Mulching</label>
+        <label><input type="checkbox" name="services" value="Weed Control"> Weed Control</label>
+      </div><br><br>
+      <label>Scheduling Priority:</label>
+      <select id="schedulingPriority" required>
+        <option value="">Select priority</option>
+        <option value="Scheduled">Scheduled</option>
+        <option value="Flexible">Flexible</option>
+        <option value="Urgent">Urgent</option>
+      </select><br><br>
+      <div id="flexibleDateGroup" style="display: none;">
+        <label>Select Available Days:</label>
+        <div class="checkbox-group" id="flexibleDays">
+          <label><input type="checkbox" value="Monday"> Monday</label>
+          <label><input type="checkbox" value="Tuesday"> Tuesday</label>
+          <label><input type="checkbox" value="Wednesday"> Wednesday</label>
+          <label><input type="checkbox" value="Thursday"> Thursday</label>
+          <label><input type="checkbox" value="Friday"> Friday</label>
+          <label><input type="checkbox" value="Saturday"> Saturday</label>
+          <label><input type="checkbox" value="Sunday"> Sunday</label>
+        </div><br>
+        <label>Available From:<br><input type="time" id="flexibleStartTime"></label><br>
+        <label>Available Until:<br><input type="time" id="flexibleEndTime"></label><br><br>
+      </div>
+      <div id="scheduledDateGroup">
+        <label>Start Date & Time:<br>
+          <input type="datetime-local" id="jobStart">
+        </label><br><br>
+      </div>
+
+      <!-- Urgent Picker (initially hidden) -->
+      <div id="urgentDateGroup" style="display: none;">
+        <label>Select Day (next 7 days):<br>
+          <select id="urgentDaySelect"></select>
+        </label><br><br>
+        <label>Select Time:<br>
+          <input type="time" id="urgentTime">
+        </label><br><br>
+      </div>
       <label>Property Size (sq ft):<br><input type="number" id="propertySize"></label><br><br>
       <label>Address:<br><input type="text" id="jobAddress"></label><br><br>
       <label>Notes:<br><textarea id="jobNotes"></textarea></label><br><br>
@@ -96,27 +259,44 @@
     </table>
   </div>
 
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
   <script>
+    const API_BASE = 'https://femmer_trimmer-name.up.railway.app';
+
     document.addEventListener('DOMContentLoaded', async function() {
       const calendarEl = document.getElementById('calendar');
       const calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        height: 650,
-        events: async function(fetchInfo, successCallback, failureCallback) {
-          try {
-            const res = await fetch('https://femmer_trimmer/api/jobs');
-            const events = await res.json();
-            successCallback(events);
-          } catch (error) {
-            failureCallback(error);
-          }
-        }
-      });
+  initialView: 'dayGridMonth',
+  height: 'auto',
+  events: async function(fetchInfo, successCallback, failureCallback) {
+    try {
+      const res = await fetch(`${API_BASE}/api/jobs`
+
+      );
+      const events = await res.json();
+      successCallback(events);
+    } catch (error) {
+      failureCallback(error);
+    }
+  },
+  eventClick: function(info) {
+    const job = info.event.extendedProps;
+    alert(
+      `Job: ${info.event.title}
+Date: ${new Date(info.event.start).toLocaleString()}
+Address: ${job.address || 'N/A'}
+Name: ${job.name || 'N/A'}
+Property Size: ${job.propertySize || 'N/A'} sq ft
+Notes: ${job.notes || 'None'}`
+    );
+  }
+});
       calendar.render();
 
       // Load quote requests
-      const res = await fetch('https://femmer_trimmer/api/quotes');
+      const res = await fetch(`${API_BASE}/api/quotes`);
       const data = await res.json();
       const tbody = document.querySelector('#quoteTable tbody');
       data.forEach(q => {
@@ -131,7 +311,7 @@
       });
 
       // Load today's schedule
-      const jobsRes = await fetch('https://femmer_trimmer/api/jobs');
+      const jobsRes = await fetch(`${API_BASE}/api/jobs`);
       const allJobs = await jobsRes.json();
       const today = new Date().toISOString().slice(0, 10);
       const todayList = document.getElementById('todaySchedule');
@@ -145,48 +325,121 @@
       });
 
       // Handle job form submission
-      document.getElementById('jobForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
+   document.getElementById('jobForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
 
-        const name = document.getElementById('jobName').value;
-        const title = document.getElementById('jobTitle').value;
-        const start = document.getElementById('jobStart').value;
-        const notes = document.getElementById('jobNotes').value;
-        const repeat = document.getElementById('jobRepeat').value;
-        const address = document.getElementById('jobAddress').value;
-        const propertySize = document.getElementById('propertySize').value;
+  const name = document.getElementById('jobName').value;
+  const serviceCheckboxes = document.querySelectorAll('input[name="services"]:checked');
+  const services = Array.from(serviceCheckboxes).map(cb => cb.value);
+  const schedulingPriority = document.getElementById('schedulingPriority').value;
 
-        const jobs = [{ title, start, notes, status: "Scheduled", name, address, propertySize }];
+  let start = null;
+  let flexibleDays = [];
+  let flexibleStartTime = null;
+  let flexibleEndTime = null;
 
-        if (repeat !== 'none') {
-          const interval = { weekly: 7, biweekly: 14, monthly: 30 }[repeat];
-          for (let i = 1; i <= 5; i++) {
-            const newStart = new Date(start);
-            newStart.setDate(newStart.getDate() + i * interval);
-            jobs.push({
-              title,
-              start: newStart.toISOString(),
-              notes,
-              status: "Scheduled",
-              name,
-              address,
-              propertySize
-            });
-          }
-        }
+  if (schedulingPriority === 'Urgent') {
+    const day = document.getElementById('urgentDaySelect').value;
+    const time = document.getElementById('urgentTime').value;
+    start = `${day}T${time}`;
 
-        for (const job of jobs) {
-          await fetch('https://femmer_trimmer/api/jobs', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(job)
-          });
-        }
+  } else if (schedulingPriority === 'Flexible') {
+    const dayCheckboxes = document.querySelectorAll('#flexibleDays input[type="checkbox"]:checked');
+    flexibleDays = Array.from(dayCheckboxes).map(cb => cb.value);
+    flexibleStartTime = document.getElementById('flexibleStartTime').value;
+    flexibleEndTime = document.getElementById('flexibleEndTime').value;
+    // 'start' stays null; your backend can decide based on days/time
+  } else {
+    start = document.getElementById('jobStart').value;
+  }
 
-        alert("Job(s) added!");
-        location.reload();
+  const notes = document.getElementById('jobNotes').value;
+  const repeat = document.getElementById('jobRepeat').value;
+  const address = document.getElementById('jobAddress').value;
+  const propertySize = document.getElementById('propertySize').value;
+
+  const jobs = [{
+    services,
+    start,
+    notes,
+    status: "Scheduled",
+    name,
+    address,
+    propertySize,
+    schedulingPriority,
+    flexibleDays,
+    flexibleStartTime,
+    flexibleEndTime
+  }];
+
+  if (repeat !== 'none' && start) {
+    const interval = { weekly: 7, biweekly: 14, monthly: 30 }[repeat];
+    for (let i = 1; i <= 5; i++) {
+      const newStart = new Date(start);
+      newStart.setDate(newStart.getDate() + i * interval);
+      jobs.push({
+        services,
+        start: newStart.toISOString(),
+        notes,
+        status: "Scheduled",
+        name,
+        address,
+        propertySize,
+        schedulingPriority,
+        flexibleDays,
+        flexibleStartTime,
+        flexibleEndTime
       });
+    }
+  }
+
+  for (const job of jobs) {
+    await fetch(`${API_BASE}/api/jobs`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(job)
     });
+  }
+
+  alert("Job(s) added!");
+  location.reload();
+});
+    });
+
+const prioritySelect = document.getElementById('schedulingPriority');
+const scheduledGroup = document.getElementById('scheduledDateGroup');
+const urgentGroup = document.getElementById('urgentDateGroup');
+const urgentDaySelect = document.getElementById('urgentDaySelect');
+const flexibleGroup = document.getElementById('flexibleDateGroup');
+
+// Listen for priority change
+prioritySelect.addEventListener('change', () => {
+if (prioritySelect.value === 'Urgent') {
+  scheduledGroup.style.display = 'none';
+  urgentGroup.style.display = 'block';
+  flexibleGroup.style.display = 'none';
+
+  urgentDaySelect.innerHTML = '';
+  for (let i = 0; i < 7; i++) {
+    const date = new Date();
+    date.setDate(date.getDate() + i);
+    const option = document.createElement('option');
+    option.value = date.toISOString().split('T')[0];
+    option.textContent = date.toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' });
+    urgentDaySelect.appendChild(option);
+  }
+
+} else if (prioritySelect.value === 'Flexible') {
+  scheduledGroup.style.display = 'none';
+  urgentGroup.style.display = 'none';
+  flexibleGroup.style.display = 'block';
+
+} else {
+  scheduledGroup.style.display = 'block';
+  urgentGroup.style.display = 'none';
+  flexibleGroup.style.display = 'none';
+}
+});
   </script>
 </body>
 </html>
