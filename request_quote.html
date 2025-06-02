@@ -532,44 +532,49 @@
     });
 
     signupForm.addEventListener('submit', async (event) => {
-      event.preventDefault();
+    event.preventDefault();
 
-      const newUser = {
-        firstName: document.getElementById('first-name').value.trim(),
-        lastName: document.getElementById('last-name').value.trim(),
-        email: document.getElementById('new-email').value.trim(),
-        phone: formatPhoneForTwilio(document.getElementById('phone').value.trim()),
-        address: document.getElementById('autocomplete').value.trim()
-      };
+    const services = Array.from(document.querySelectorAll('input[name="services"]:checked')).map(el => el.value);
+    const mowingSchedule = document.getElementById('mowing-schedule').value;
 
-      console.log("📬 Submitting:", newUser);
+    const newQuote = {
+      firstName: document.getElementById('first-name').value.trim(),
+      lastName: document.getElementById('last-name').value.trim(),
+      email: document.getElementById('new-email').value.trim(),
+      phone: formatPhoneForTwilio(document.getElementById('phone').value.trim()),
+      address: document.getElementById('autocomplete').value.trim(),
+      services,
+      mowingSchedule: services.includes("Mowing & Trimming") ? mowingSchedule : null
+    };
 
-      signupButton.disabled = true;
-      signupButton.textContent = "Creating Account...";
+    console.log("📬 Submitting:", newQuote);
 
-      try {
-        const response = await fetch('https://geega-games-website-production.up.railway.app/signup', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(newUser)
-        });
+    signupButton.disabled = true;
+    signupButton.textContent = "Submitting...";
 
-        const result = await response.json();
-        if (response.ok) {
-          alert(result.message || "Account created successfully!");
-          signupForm.reset();
-          window.location.href = "login.html";
-        } else {
-          alert(result.message || "Signup failed.");
-        }
-      } catch (error) {
-        console.error("Signup error:", error);
-        alert("Could not connect to the server.");
-      } finally {
-        signupButton.disabled = false;
-        signupButton.textContent = "Sign Up";
+    try {
+      const response = await fetch('https://femmer_trimmer-name.up.railway.app/api/quote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newQuote)
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        alert(result.message || "Quote request submitted successfully!");
+        signupForm.reset();
+        window.location.href = "thank_you.html"; // change to your desired redirect page
+      } else {
+        alert(result.message || "Submission failed.");
       }
-    });
+    } catch (error) {
+      console.error("Submission error:", error);
+      alert("Could not connect to the server.");
+    } finally {
+      signupButton.disabled = false;
+      signupButton.textContent = "Submit";
+    }
+  });
 
     async function handleGoogleLogin(response) {
       const { credential } = response;
