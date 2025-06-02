@@ -102,7 +102,17 @@ app.post('/api/jobs', async (req, res) => {
 app.get('/api/jobs', async (req, res) => {
   try {
     const jobs = await Job.find();
-    res.status(200).json(jobs);
+    const events = jobs
+      .filter(job => !!job.start)
+      .map(job => ({
+        title: job.services.join(', ') + (job.name ? ` for ${job.name}` : ' Job'),
+        start: job.start,
+        address: job.address,
+        name: job.name,
+        notes: job.notes,
+        propertySize: job.propertySize
+      }));
+    res.status(200).json(events);
   } catch (error) {
     console.error('❌ Error fetching jobs:', error);
     res.status(500).json({ message: 'Failed to fetch jobs.' });
