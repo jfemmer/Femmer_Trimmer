@@ -71,13 +71,17 @@ app.post('/api/quote', async (req, res) => {
 });
 
 const jobSchema = new mongoose.Schema({
-  title: String,
-  start: String,
-  notes: String,
-  status: String,
   name: String,
+  services: [String],
+  start: String, // could be null for flexible jobs
+  notes: String,
+  status: { type: String, default: "Scheduled" },
   address: String,
-  propertySize: Number
+  propertySize: Number,
+  schedulingPriority: String, // Scheduled, Flexible, or Urgent
+  flexibleDays: [String],     // Only for Flexible jobs
+  flexibleStartTime: String,  // Only for Flexible jobs
+  flexibleEndTime: String     // Only for Flexible jobs
 }, { collection: 'jobs' });
 
 const Job = mongoose.model('Job', jobSchema);
