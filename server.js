@@ -6,7 +6,15 @@ const app = express();
 const apiBase = 'https://femmer_trimmer-name.up.railway.app';
 
 // Middleware
-app.use(cors());
+const corsOptions = {
+  origin: ['http://localhost:5500', 'https://femmer_trimmer-name.up.railway.app'],
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type'],
+  credentials: false
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(express.json());
 
 // Connect to MongoDB
