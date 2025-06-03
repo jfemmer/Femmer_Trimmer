@@ -86,15 +86,13 @@ const jobSchema = new mongoose.Schema({
 
 const Job = mongoose.model('Job', jobSchema);
 
-// Save a new job
 app.post('/api/jobs', async (req, res) => {
   try {
-    const job = new Job(req.body);
-    await job.save();
-    res.status(201).json(job);
+    const newJob = new Job(req.body);
+    await newJob.save();
+    res.status(201).json({ message: 'Job created' });
   } catch (error) {
-    console.error('❌ Error saving job:', error);
-    res.status(500).json({ message: 'Failed to save job.' });
+    res.status(500).json({ error: 'Failed to create job' });
   }
 });
 
