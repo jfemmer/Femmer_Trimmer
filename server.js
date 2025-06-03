@@ -7,7 +7,7 @@ const apiBase = 'https://femmer_trimmer-name.up.railway.app';
 
 // Middleware
 const corsOptions = {
-  origin: ['http://localhost:5500', 'https://femmer_trimmer-name.up.railway.app'],
+  origin: ['http://localhost:5500', 'https://femmer_trimmer-name.up.railway.app', 'https://jfemmer.github.io'],
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type'],
   credentials: false
