@@ -43,7 +43,7 @@ const quoteSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 // Register the model on the 'new_requests' collection
-const QuoteRequest = require('./models/QuoteRequest');
+const QuoteRequest = quotesConnection.model('QuoteRequest', quoteSchema, 'new_requests');
 
 module.exports = QuoteRequest;
 // Route to handle quote submissions
