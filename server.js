@@ -10,18 +10,20 @@ const corsOptions = {
   origin: ['http://localhost:5500', 'https://femmer_trimmer-name.up.railway.app', 'https://jfemmer.github.io'],
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type'],
-  credentials: false
+  credentials: true
 };
 
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  next();
+});
 app.use(express.json());
 
 // Connect to MongoDB
-mongoose.connect(process.env.NEW_JOBS_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
+mongoose.connect(process.env.NEW_JOBS_URI)
 .then(() => console.log('✅ Connected to MongoDB'))
 .catch(err => console.error('❌ MongoDB connection error:', err));
 
@@ -34,7 +36,7 @@ const quoteSchema = new mongoose.Schema({
   address: String,
   services: [String],
   mowingSchedule: String
-});
+}, { timestamps: true });
 
 const QuoteRequest = mongoose.model('QuoteRequest', quoteSchema);
 
@@ -70,19 +72,38 @@ app.post('/api/quote', async (req, res) => {
   }
 });
 
+app.get('/api/quotes', async (req, res) => {
+  try {
+    const quotes = await QuoteRequest.find().sort({ _id: -1 }); // Most recent first
+    const simplified = quotes.map(q => ({
+      name: `${q.firstName} ${q.lastName}`,
+      requestedService: q.services.join(', '),
+      submittedAt: q.createdAt,
+      notes: q.mowingSchedule ? `Mowing: ${q.mowingSchedule}` : '—'
+    }));
+    res.status(200).json(simplified);
+  } catch (err) {
+    console.error("❌ Failed to fetch quotes:", err);
+    res.status(500).json({ message: 'Failed to fetch quotes' });
+  }
+});
+
 const jobSchema = new mongoose.Schema({
   name: String,
   services: [String],
-  start: String, // could be null for flexible jobs
+  start: String,
   notes: String,
   status: { type: String, default: "Scheduled" },
   address: String,
   propertySize: Number,
-  schedulingPriority: String, // Scheduled, Flexible, or Urgent
-  flexibleDays: [String],     // Only for Flexible jobs
-  flexibleStartTime: String,  // Only for Flexible jobs
-  flexibleEndTime: String     // Only for Flexible jobs
-}, { collection: 'jobs' });
+  schedulingPriority: String,
+  flexibleDays: [String],
+  flexibleStartTime: String,
+  flexibleEndTime: String
+}, {
+  collection: 'jobs',
+  timestamps: true
+});
 
 const Job = mongoose.model('Job', jobSchema);
 
