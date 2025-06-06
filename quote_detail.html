@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Quote Details</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      background: #f4f8f5;
+    }
+    .quote-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    h2 {
+      color: #216c2a;
+    }
+    p {
+      margin: 8px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="quote-card">
+    <h2>Quote Request Details</h2>
+    <div id="quoteDetails">Loading...</div>
+    <button onclick="history.back()">← Go Back</button>
+  </div>
+
+  <script>
+    const API_BASE = 'https://femmertrimmer-production.up.railway.app';
+
+async function loadQuoteDetails() {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+  
+  if (!id || id === 'undefined') {
+    document.getElementById('quoteDetails').textContent = '❌ No valid quote ID provided in URL.';
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_BASE}/api/quotes/${id}`);
+    if (!res.ok) throw new Error("Server returned non-OK");
+
+    const q = await res.json();
+
+    document.getElementById('quoteDetails').innerHTML = `
+      <p><strong>Name:</strong> ${q.firstName} ${q.lastName}</p>
+      <p><strong>Email:</strong> ${q.email}</p>
+      <p><strong>Phone:</strong> ${q.phone}</p>
+      <p><strong>Address:</strong> ${q.address}</p>
+      <p><strong>Services:</strong> ${Array.isArray(q.services) ? q.services.join(', ') : '—'}</p>
+      ${q.mowingSchedule ? `<p><strong>Mowing Schedule:</strong> ${q.mowingSchedule}</p>` : ''}
+      <p><strong>Submitted:</strong> ${new Date(q.createdAt).toLocaleString()}</p>
+    `;
+  } catch (err) {
+    console.error(err);
+    document.getElementById('quoteDetails').textContent = '❌ Failed to load quote details.';
+  }
+}
+
+    loadQuoteDetails();
+  </script>
+</body>
+</html>
