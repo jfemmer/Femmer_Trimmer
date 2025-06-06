@@ -5,35 +5,24 @@ const cors = require('cors');
 const app = express();
 const apiBase = 'https://femmer_trimmer-name.up.railway.app';
 
-// Middleware
-const corsOptions = {
-  origin: ['http://localhost:5500', 'https://femmer_trimmer-name.up.railway.app', 'https://jfemmer.github.io'],
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type'],
-  credentials: true
-};
-
 const allowedOrigins = [
   'http://localhost:5500',
   'https://femmer_trimmer-name.up.railway.app',
   'https://jfemmer.github.io'
 ];
 
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  }
+const corsOptions = {
+  origin: [
+    'http://localhost:5500',
+    'https://jfemmer.github.io',
+    'https://femmer_trimmer-name.up.railway.app'
+  ],
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type'],
+  credentials: true
+};
 
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(204); // ✅ End preflight immediately
-  }
-
-  next();
-});
+app.use(cors(corsOptions)); 
 app.use(express.json());
 
 // Connect to MongoDB
