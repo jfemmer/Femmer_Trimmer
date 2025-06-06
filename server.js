@@ -3,11 +3,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const app = express();
-const apiBase = 'femmertrimmer-production.up.railway.app';
+const apiBase = 'https://femmertrimmer-production.up.railway.app';
 
 const allowedOrigins = [
   'http://localhost:5500',
-  'femmertrimmer-production.up.railway.app',
+  'https://femmertrimmer-production.up.railway.app',
   'https://jfemmer.github.io'
 ];
 
@@ -15,7 +15,7 @@ const corsOptions = {
   origin: [
     'http://localhost:5500',
     'https://jfemmer.github.io',
-    'femmertrimmer-production.up.railway.app'
+    'https://femmertrimmer-production.up.railway.app'
   ],
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type'],
@@ -68,7 +68,7 @@ app.post('/api/quote', async (req, res) => {
     });
 
     await newQuote.save();
-    res.status(200).json({ message: 'Quote request submitted successfully!' });
+    res.status(200).json(newQuote); // ✅ Now includes _id for frontend use
   } catch (err) {
     console.error('❌ Error saving quote request:', err);
     res.status(500).json({ message: 'Server error. Please try again later.' });
@@ -77,17 +77,25 @@ app.post('/api/quote', async (req, res) => {
 
 app.get('/api/quotes', async (req, res) => {
   try {
-    const quotes = await QuoteRequest.find().sort({ _id: -1 }); // Most recent first
-    const simplified = quotes.map(q => ({
-      name: `${q.firstName} ${q.lastName}`,
-      requestedService: q.services.join(', '),
-      submittedAt: q.createdAt,
-      notes: q.mowingSchedule ? `Mowing: ${q.mowingSchedule}` : '—'
-    }));
-    res.status(200).json(simplified);
+    const quotes = await QuoteRequest.find().sort({ _id: -1 });
+    console.log("📤 Sending raw quote:", quotes[0]); // ADD THIS LINE
+    res.status(200).json(quotes);
   } catch (err) {
     console.error("❌ Failed to fetch quotes:", err);
     res.status(500).json({ message: 'Failed to fetch quotes' });
+  }
+});
+
+app.get('/api/quotes/:id', async (req, res) => {
+  try {
+    const quote = await QuoteRequest.findById(req.params.id);
+    if (!quote) {
+      return res.status(404).json({ message: 'Quote not found' });
+    }
+    res.status(200).json(quote);
+  } catch (err) {
+    console.error("❌ Failed to fetch quote by ID:", err);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
