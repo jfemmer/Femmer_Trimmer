@@ -558,7 +558,8 @@
       const response = await fetch(`${API_BASE}/api/quote`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newQuote)
+        body: JSON.stringify(newQuote),
+        credentials: 'include'
       });
 
       const result = await response.json();
