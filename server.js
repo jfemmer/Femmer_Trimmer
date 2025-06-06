@@ -26,11 +26,12 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 // Connect to MongoDB
-mongoose.connect(process.env.NEW_JOBS_URI)
-.then(() => console.log('✅ Connected to MongoDB'))
-.catch(err => console.error('❌ MongoDB connection error:', err));
+const quotesConnection = mongoose.createConnection(process.env.QUOTES_DB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
-// Mongoose Schema
+// Define the schema
 const quoteSchema = new mongoose.Schema({
   firstName: String,
   lastName: String,
@@ -41,8 +42,10 @@ const quoteSchema = new mongoose.Schema({
   mowingSchedule: String
 }, { timestamps: true });
 
-const QuoteRequest = mongoose.model('QuoteRequest', quoteSchema);
+// Register the model on the 'new_requests' collection
+const QuoteRequest = require('./models/QuoteRequest');
 
+module.exports = QuoteRequest;
 // Route to handle quote submissions
 app.post('/api/quote', async (req, res) => {
   try {
