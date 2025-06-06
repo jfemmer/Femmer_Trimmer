@@ -263,7 +263,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
   <script>
-    const API_BASE = 'femmertrimmer-production.up.railway.app';
+    const API_BASE = 'https://femmertrimmer-production.up.railway.app';
 
     document.addEventListener('DOMContentLoaded', async function() {
       const calendarEl = document.getElementById('calendar');
@@ -295,20 +295,41 @@ Notes: ${job.notes || 'None'}`
 });
       calendar.render();
 
-      // Load quote requests
-      const res = await fetch(`${API_BASE}/api/quotes`);
-      const data = await res.json();
-      const tbody = document.querySelector('#quoteTable tbody');
-      data.forEach(q => {
-        const row = `
-          <tr>
-            <td>${q.name}</td>
-            <td>${q.requestedService}</td>
-            <td>${new Date(q.submittedAt).toLocaleDateString()}</td>
-            <td>${q.notes}</td>
-          </tr>`;
-        tbody.innerHTML += row;
-      });
+// Load quote requests
+const res = await fetch(`${API_BASE}/api/quotes`);
+const data = await res.json();
+const tbody = document.querySelector('#quoteTable tbody');
+tbody.innerHTML = ''; // Clear any existing rows
+console.log('🔁 Full quote data:', data);
+data.forEach(q => {
+  console.log('✅ Quote:', q);
+
+  if (!q._id) {
+    console.warn('❌ Missing _id in quote:', q);
+    return;
+  }
+
+  const row = document.createElement('tr');
+  row.dataset.quoteId = q._id;
+  row.style.cursor = 'pointer';
+
+  row.innerHTML = `
+    <td>${q.firstName || ''} ${q.lastName || ''}</td>
+    <td>${Array.isArray(q.services) ? q.services.join(', ') : '—'}</td>
+    <td>${q.createdAt ? new Date(q.createdAt).toLocaleDateString() : '—'}</td>
+    <td>${q.mowingSchedule ? `Mowing: ${q.mowingSchedule}` : '—'}</td>
+  `;
+
+  row.addEventListener('click', () => {
+    const id = row.dataset.quoteId;
+    if (id) {
+      window.location.href = `quote_detail.html?id=${id}`;
+    }
+  });
+
+  tbody.appendChild(row);
+});
+
 
       // Load today's schedule
       const jobsRes = await fetch(`${API_BASE}/api/jobs`);
