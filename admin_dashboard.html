@@ -425,47 +425,55 @@ let calendar;
         <ul id="todaySchedule"></ul>
       </div>
 
-  <div class="section" id="addjob-section">
-    <h2>Add New Job</h2>
-    <form id="jobForm">
-      <label>Name:<br><input type="text" id="jobName"></label><br><br>
-      <label>Service Type:</label>
-      <div id="jobServices" class="checkbox-group">
-        <label><input type="checkbox" name="services" value="Bush Trimming"> Bush Trimming</label>
-        <label><input type="checkbox" name="services" value="Gutter Cleaning"> Gutter Cleaning</label>
-        <label><input type="checkbox" name="services" value="Mowing and Trimming"> Mowing and Trimming</label>
-        <label><input type="checkbox" name="services" value="Power Washing"> Power Washing</label>
-        <label><input type="checkbox" name="services" value="Edging"> Edging</label>
-        <label><input type="checkbox" name="services" value="Leaf Cleanup"> Leaf Cleanup</label>
-        <label><input type="checkbox" name="services" value="Mulching"> Mulching</label>
-        <label><input type="checkbox" name="services" value="Weed Control"> Weed Control</label>
-      </div><br><br>
-      <label>Scheduling Priority:</label>
-      <select id="schedulingPriority" required>
-        <option value="">Select priority</option>
-        <option value="Scheduled">Scheduled</option>
-        <option value="Flexible">Flexible</option>
-        <option value="Urgent">Urgent</option>
-      </select><br><br>
-      <div id="flexibleDateGroup" style="display: none;">
-        <label>Select Available Days:</label>
-        <div class="checkbox-group" id="flexibleDays">
-          <label><input type="checkbox" value="Monday"> Monday</label>
-          <label><input type="checkbox" value="Tuesday"> Tuesday</label>
-          <label><input type="checkbox" value="Wednesday"> Wednesday</label>
-          <label><input type="checkbox" value="Thursday"> Thursday</label>
-          <label><input type="checkbox" value="Friday"> Friday</label>
-          <label><input type="checkbox" value="Saturday"> Saturday</label>
-          <label><input type="checkbox" value="Sunday"> Sunday</label>
-        </div><br>
-        <label>Available From:<br><input type="time" id="flexibleStartTime"></label><br>
-        <label>Available Until:<br><input type="time" id="flexibleEndTime"></label><br><br>
-      </div>
-      <div id="scheduledDateGroup">
-        <label>Start Date & Time:<br>
-          <input type="datetime-local" id="jobStart">
-        </label><br><br>
-      </div>
+ <div class="section" id="addjob-section">
+  <h2>Add New Job</h2>
+  <form id="jobForm">
+
+    <label>First Name:<br><input type="text" id="firstName" required></label><br>
+    <label>Last Name:<br><input type="text" id="lastName" required></label><br>
+    <label>Email:<br><input type="email" id="email" required></label><br>
+    <label>Phone:<br><input type="tel" id="phone" required></label><br><br>
+
+    <label>Service Type:</label>
+    <div id="jobServices" class="checkbox-group">
+      <label><input type="checkbox" name="services" value="Bush Trimming"> Bush Trimming</label>
+      <label><input type="checkbox" name="services" value="Gutter Cleaning"> Gutter Cleaning</label>
+      <label><input type="checkbox" name="services" value="Mowing and Trimming"> Mowing and Trimming</label>
+      <label><input type="checkbox" name="services" value="Power Washing"> Power Washing</label>
+      <label><input type="checkbox" name="services" value="Edging"> Edging</label>
+      <label><input type="checkbox" name="services" value="Leaf Cleanup"> Leaf Cleanup</label>
+      <label><input type="checkbox" name="services" value="Mulching"> Mulching</label>
+      <label><input type="checkbox" name="services" value="Weed Control"> Weed Control</label>
+    </div><br><br>
+
+    <label>Scheduling Priority:</label>
+    <select id="schedulingPriority" required>
+      <option value="">Select priority</option>
+      <option value="Scheduled">Scheduled</option>
+      <option value="Flexible">Flexible</option>
+      <option value="Urgent">Urgent</option>
+    </select><br><br>
+
+    <div id="flexibleDateGroup" style="display: none;">
+      <label>Select Available Days:</label>
+      <div class="checkbox-group" id="flexibleDays">
+        <label><input type="checkbox" value="Monday"> Monday</label>
+        <label><input type="checkbox" value="Tuesday"> Tuesday</label>
+        <label><input type="checkbox" value="Wednesday"> Wednesday</label>
+        <label><input type="checkbox" value="Thursday"> Thursday</label>
+        <label><input type="checkbox" value="Friday"> Friday</label>
+        <label><input type="checkbox" value="Saturday"> Saturday</label>
+        <label><input type="checkbox" value="Sunday"> Sunday</label>
+      </div><br>
+      <label>Available From:<br><input type="time" id="flexibleStartTime"></label><br>
+      <label>Available Until:<br><input type="time" id="flexibleEndTime"></label><br><br>
+    </div>
+
+    <div id="scheduledDateGroup">
+      <label>Start Date & Time:<br>
+        <input type="datetime-local" id="jobStart">
+      </label><br><br>
+    </div>
 
       <!-- Urgent Picker (initially hidden) -->
       <div id="urgentDateGroup" style="display: none;">
@@ -604,7 +612,11 @@ data.forEach(q => {
    document.getElementById('jobForm').addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const name = document.getElementById('jobName').value;
+  const firstName = document.getElementById('firstName').value.trim();
+  const lastName = document.getElementById('lastName').value.trim();
+  const name = `${firstName} ${lastName}`;
+  const email = document.getElementById('email').value.trim();
+  const phone = document.getElementById('phone').value.trim();
   const serviceCheckboxes = document.querySelectorAll('input[name="services"]:checked');
   const services = Array.from(serviceCheckboxes).map(cb => cb.value);
   const schedulingPriority = document.getElementById('schedulingPriority').value;
