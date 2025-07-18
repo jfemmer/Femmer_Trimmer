@@ -5,6 +5,11 @@ const cors = require('cors');
 const app = express();
 const apiBase = 'https://femmertrimmer-production.up.railway.app';
 
+const jobsConnection = mongoose.createConnection(process.env.NEW_JOBS_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
 const allowedOrigins = [
   'http://localhost:5500',
   'https://femmertrimmer-production.up.railway.app',
@@ -39,7 +44,12 @@ const quoteSchema = new mongoose.Schema({
   phone: String,
   address: String,
   services: [String],
-  mowingSchedule: String
+  mowingSchedule: String,
+  estimateAmount: String,
+  estimateNotes: String,
+  deliveryMethod: String,
+  sentAt: Date,
+status: { type: String, default: 'New' }
 }, { timestamps: true });
 
 // Register the model on the 'new_requests' collection
@@ -47,7 +57,7 @@ const QuoteRequest = quotesConnection.model('QuoteRequest', quoteSchema, 'new_re
 
 module.exports = QuoteRequest;
 // Route to handle quote submissions
-app.post('/api/quote', async (req, res) => {
+app.post('/api/quotes', async (req, res) => {
   try {
     const { firstName, lastName, email, phone, address, services, mowingSchedule } = req.body;
 
@@ -102,6 +112,20 @@ app.get('/api/quotes/:id', async (req, res) => {
   }
 });
 
+app.patch('/api/quotes/:id/mark-pending', async (req, res) => {
+  try {
+    const updated = await QuoteRequest.findByIdAndUpdate(req.params.id, {
+      ...req.body
+    }, { new: true });
+
+    if (!updated) return res.status(404).json({ message: 'Quote not found' });
+    res.status(200).json(updated);
+  } catch (err) {
+    console.error("❌ Failed to update quote:", err);
+    res.status(500).json({ message: 'Failed to update quote' });
+  }
+});
+
 const jobSchema = new mongoose.Schema({
   name: String,
   services: [String],
@@ -119,7 +143,7 @@ const jobSchema = new mongoose.Schema({
   timestamps: true
 });
 
-const Job = mongoose.model('Job', jobSchema);
+const Job = jobsConnection.model('Job', jobSchema);
 
 app.post('/api/jobs', async (req, res) => {
   try {
