@@ -299,6 +299,30 @@ th, td {
   padding: 6px 0;
 }
 
+.dollar-input {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  background: white;
+}
+
+.dollar-input span {
+  margin-right: 0.5rem;
+  color: #555;
+  font-weight: 600;
+}
+
+.dollar-input input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 1rem;
+}
+
 /* Mobile adjustments */
 @media (max-width: 768px) {
   .layout {
@@ -477,25 +501,34 @@ let calendar;
 
       <!-- Urgent Picker (initially hidden) -->
       <div id="urgentDateGroup" style="display: none;">
-        <label>Select Day (next 7 days):<br>
-          <select id="urgentDaySelect"></select>
-        </label><br><br>
-        <label>Select Time:<br>
-          <input type="time" id="urgentTime">
-        </label><br><br>
-      </div>
-      <label>Property Size (sq ft):<br><input type="number" id="propertySize"></label><br><br>
-      <label>Address:<br><input type="text" id="jobAddress"></label><br><br>
-      <label>Notes:<br><textarea id="jobNotes"></textarea></label><br><br>
-      <label>Repeat:<br>
-        <select id="jobRepeat">
-          <option value="none">None</option>
-          <option value="weekly">Weekly</option>
-          <option value="biweekly">Bi-weekly</option>
-          <option value="monthly">Monthly</option>
-        </select>
-      </label><br><br>
-      <button type="submit">Add Job</button>
+  <label>Select Day (next 7 days):<br>
+    <select id="urgentDaySelect"></select>
+  </label><br><br>
+  <label>Select Time:<br>
+    <input type="time" id="urgentTime">
+  </label><br><br>
+</div>
+
+<label>Property Size (sq ft):<br><input type="number" id="propertySize"></label><br><br>
+
+<label>Price Per Cut ($):</label>
+<div class="dollar-input">
+  <span>$</span>
+  <input type="number" id="jobPrice" step="0.01" min="0" required>
+</div><br><br>
+
+<label>Address:<br><input type="text" id="jobAddress"></label><br><br>
+<label>Notes:<br><textarea id="jobNotes"></textarea></label><br><br>
+<label>Repeat:<br>
+  <select id="jobRepeat">
+    <option value="none">None</option>
+    <option value="weekly">Weekly</option>
+    <option value="biweekly">Bi-weekly</option>
+    <option value="monthly">Monthly</option>
+  </select>
+</label><br><br>
+<button type="submit">Add Job</button>
+
     </form>
   </div>
 
@@ -645,20 +678,26 @@ data.forEach(q => {
   const repeat = document.getElementById('jobRepeat').value;
   const address = document.getElementById('jobAddress').value;
   const propertySize = document.getElementById('propertySize').value;
+  const price = parseFloat(document.getElementById('jobPrice').value);
 
   const jobs = [{
-    services,
-    start,
-    notes,
-    status: "Scheduled",
-    name,
-    address,
-    propertySize,
-    schedulingPriority,
-    flexibleDays,
-    flexibleStartTime,
-    flexibleEndTime
-  }];
+  services,
+  start,
+  notes,
+  status: "Scheduled",
+  name,
+  firstName,
+  lastName,
+  email,
+  phone,
+  address,
+  propertySize,
+  price,
+  schedulingPriority,
+  flexibleDays,
+  flexibleStartTime,
+  flexibleEndTime
+}];
 
   if (repeat !== 'none' && start) {
     const interval = { weekly: 7, biweekly: 14, monthly: 30 }[repeat];
@@ -688,6 +727,20 @@ data.forEach(q => {
       body: JSON.stringify(job)
     });
   }
+
+  await fetch(`${API_BASE}/api/clients`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    firstName,
+    lastName,
+    email,
+    phone,
+    address,
+    propertySize,
+    jobs
+  })
+});
 
   alert("Job(s) added!");
   calendar.refetchEvents();
