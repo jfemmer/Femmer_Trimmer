@@ -5,9 +5,16 @@ const cors = require('cors');
 const app = express();
 const apiBase = 'https://femmertrimmer-production.up.railway.app';
 
+const Client = clientsConnection.model('Client', clientSchema);
+
 const jobsConnection = mongoose.createConnection(process.env.NEW_JOBS_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+});
+
+const clientsConnection = mongoose.createConnection(process.env.CLIENT_DATA_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
 });
 
 const allowedOrigins = [
@@ -51,6 +58,34 @@ const quoteSchema = new mongoose.Schema({
   sentAt: Date,
 status: { type: String, default: 'New' }
 }, { timestamps: true });
+
+const clientSchema = new mongoose.Schema({
+  firstName: String,
+  lastName: String,
+  email: String,
+  phone: String,
+  address: String,
+  propertySize: Number,
+  jobs: [
+    {
+      services: [String],
+      start: String,
+      notes: String,
+      status: String,
+      address: String,
+      propertySize: Number,
+      price: Number,
+      schedulingPriority: String,
+      flexibleDays: [String],
+      flexibleStartTime: String,
+      flexibleEndTime: String
+    }
+  ]
+}, {
+  collection: 'clients',
+  timestamps: true
+});
+
 
 // Register the model on the 'new_requests' collection
 const QuoteRequest = quotesConnection.model('QuoteRequest', quoteSchema, 'new_requests');
@@ -173,6 +208,17 @@ app.get('/api/jobs', async (req, res) => {
   } catch (error) {
     console.error('❌ Error fetching jobs:', error);
     res.status(500).json({ message: 'Failed to fetch jobs.' });
+  }
+});
+
+app.post('/api/clients', async (req, res) => {
+  try {
+    const newClient = new Client(req.body);
+    await newClient.save();
+    res.status(201).json({ message: 'Client saved successfully' });
+  } catch (err) {
+    console.error('❌ Error saving client:', err);
+    res.status(500).json({ message: 'Failed to save client' });
   }
 });
 
