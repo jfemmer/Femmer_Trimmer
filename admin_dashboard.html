@@ -6,103 +6,119 @@
   <title>Femmer Trimmer Admin Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css">
-  <style>
-    :root {
-      --primary: #2b7a2b;
-      --background: #f4f8f5;
-      --card-bg: #ffffff;
-      --accent: #d1e7dd;
-    }
 
-    * {
-      box-sizing: border-box;
-    }
+<style>
+:root {
+  --primary: #2b7a2b;
+  --background: #f4f8f5;
+  --card-bg: #ffffff;
+  --accent: #d1e7dd;
+  --accent-hover: #c3ddce;
+  --border-light: #e2e8f0;
+}
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--background);
-      margin: 0;
-      padding: 0;
-      color: #333;
-    }
+* {
+  box-sizing: border-box;
+}
 
-    header {
-      background: var(--primary);
-      color: white;
-      padding: 1rem 2rem;
-      text-align: center;
-      font-size: 1.5rem;
-      font-weight: 600;
-    }
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--background);
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
 
-    .container {
-      padding: 2rem;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
+header {
+  background: var(--primary);
+  color: white;
+  padding: 1rem 2rem;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
 
-    .section {
-      background: var(--card-bg);
-      border-radius: 12px;
-      padding: 1.5rem;
-      margin-bottom: 2rem;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    }
+.container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  flex-grow: 1;
+}
 
-    h2 {
-      color: var(--primary);
-      margin-bottom: 1rem;
-    }
+.section {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
 
-    form label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: 600;
-    }
+h2 {
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
 
-    form input, form textarea, form select {
-      width: 100%;
-      padding: 0.75rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      margin-bottom: 1rem;
-      font-size: 1rem;
-    }
+form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
 
-    button[type="submit"] {
-      background: var(--primary);
-      color: white;
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
+form input,
+form textarea,
+form select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
 
-    button[type="submit"]:hover {
-      background: #256b25;
-    }
+button[type="submit"] {
+  background: var(--primary);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1rem;
-    }
+button[type="submit"]:hover {
+  background: #256b25;
+}
 
-    th, td {
-      padding: 0.75rem;
-      text-align: left;
-      border: 1px solid #ccc;
-    }
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  background-color: #fff;
+  overflow: hidden;
+  margin-top: 1rem;
+}
 
-    th {
-      background-color: var(--accent);
-    }
+thead {
+  background-color: var(--accent);
+  font-weight: bold;
+}
 
-    #calendar {
+tbody tr:hover {
+  background-color: #f0f0f0;
+}
+
+th, td {
+  padding: 0.75rem;
+  text-align: left;
+  border: 1px solid var(--border-light);
+}
+
+#calendar {
   max-width: 100%;
-  overflow: hidden; /* prevent scrollbars */
+  overflow: hidden;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
@@ -116,11 +132,11 @@
 .fc-toolbar-title {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #2b7a2b;
+  color: var(--primary);
 }
 
 .fc-button {
-  background: #2b7a2b !important;
+  background: var(--primary) !important;
   border: none !important;
   color: white !important;
   border-radius: 6px !important;
@@ -141,7 +157,7 @@
 .checkbox-group label {
   display: flex;
   align-items: center;
-  justify-content: flex-start;     /* 👈 align content to the left */
+  justify-content: flex-start;
   width: 200px;
   height: 48px;
   background: #f2f2f2;
@@ -151,7 +167,7 @@
   border: 1px solid #ccc;
   box-sizing: border-box;
   padding: 0 12px;
-  gap: 10px;                       /* 👈 space between checkbox and text */
+  gap: 10px;
   overflow: hidden;
   transition: background 0.2s;
   white-space: nowrap;
@@ -164,27 +180,253 @@
 
 .checkbox-group input[type="checkbox"] {
   transform: scale(1.1);
-  margin: 0;                       /* 👈 ensure consistent spacing */
-  vertical-align: middle;         /* optional backup for older browsers */
+  margin: 0;
+  vertical-align: middle;
 }
 
-  </style>
+.top-nav {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: var(--primary);
+  color: white;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.layout {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+}
+
+.sidebar {
+  background-color: #ffffff;
+  border-right: 1px solid var(--border-light);
+  padding: 2rem 1.25rem;
+  min-width: 240px;
+  height: calc(100vh - 80px);
+  position: sticky;
+  top: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.03);
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem; /* Adds spacing between buttons */
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--primary);
+  background-color: #f8f9fa; /* Light button background */
+  text-decoration: none !important; /* Removes underline */
+  transition: all 0.3s ease;
+  border: 1px solid var(--border-light);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.sidebar-link::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: transparent;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar-link:hover {
+  background-color: var(--accent-hover);
+  color: #1f5f1f;
+  border-color: var(--accent);
+  transform: translateX(2px);
+  box-shadow: 0 3px 6px rgba(43, 122, 43, 0.08);
+}
+
+.sidebar-link:hover::before {
+  background-color: var(--primary);
+}
+
+.sidebar-link.active {
+  background-color: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(43, 122, 43, 0.2);
+}
+
+.sidebar-link.active::before {
+  background-color: white;
+}
+
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo img {
+  height: 70px;
+  width: auto;
+  border-radius: 6px;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+}
+
+.admin-tag {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: white;
+  padding: 6px 0;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    flex-direction: row;
+    flex-wrap: wrap;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border-light);
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .sidebar-link {
+    flex: 1 0 40%;
+    text-align: center;
+    padding: 0.5rem 0.75rem;
+  }
+}
+
+.quote-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
+    .quote-tabs button {
+      padding: 0.5rem 1rem;
+      background: var(--accent);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .quote-tabs button.active {
+      background: var(--primary);
+      color: white;
+    }
+    .quote-tab-content {
+      display: none;
+    }
+    .quote-tab-content.active {
+      display: block;
+    }
+</style>
 </head>
+<script>
+
+let calendar;
+
+  function showSection(id, clickedLink) {
+  document.querySelectorAll('.section').forEach(section => {
+    section.style.display = 'none';
+  });
+  const current = document.getElementById(id);
+  current.style.display = 'block';
+
+  document.querySelectorAll('.sidebar-link').forEach(link => {
+    link.classList.remove('active');
+  });
+  if (clickedLink) {
+    clickedLink.classList.add('active');
+  }
+
+  // Fix: Rerender calendar if this is the calendar section
+  if (id === 'calendar-section' && typeof calendar !== 'undefined') {
+    setTimeout(() => {
+      calendar.render();
+    }, 50);
+  }
+}
+
+  document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const tab = params.get('tab') || 'calendar';
+
+  const tabMap = {
+    calendar: 'calendar-section',
+    schedule: 'schedule-section',
+    addjob: 'addjob-section',
+    quotes: 'quotes-section'
+  };
+
+  const sectionId = tabMap[tab];
+  if (sectionId) {
+    const targetLink = Array.from(document.querySelectorAll('.sidebar-link')).find(link =>
+      link.getAttribute('onclick')?.includes(sectionId)
+    );
+    showSection(sectionId, targetLink);
+  } else {
+    const defaultLink = document.querySelector('.sidebar-link');
+    showSection('calendar-section', defaultLink);
+  }
+});
+
+</script>
 <body>
-  <h1>Femmer Trimmer Admin Dashboard</h1>
-<div class="container">
-  <div class="section">
-    <h2>📅 Job Calendar</h2>
-    <div id="calendar"></div>
+  <header class="top-nav">
+  <div class="header-content">
+    <div class="logo">
+      <img src="images/Logo.png" alt="Femmer Trimmer Logo">
+    </div>
   </div>
+</header>
 
-  <div class="section">
-    <h2>📋 Today's Schedule</h2>
-    <ul id="todaySchedule"></ul>
-  </div>
+  <div class="layout">
+    <aside class="sidebar">
+      <a href="#" class="sidebar-link" onclick="showSection('calendar-section', this)">Calendar</a>
+      <a href="#" class="sidebar-link" onclick="showSection('schedule-section', this)">Today's Schedule</a>
+      <a href="#" class="sidebar-link" onclick="showSection('addjob-section', this)">Add Job</a>
+      <a href="#" class="sidebar-link" onclick="showSection('quotes-section', this)">Quotes</a>
+    </aside>
 
-  <div class="section">
-    <h2>➕ Add New Job</h2>
+    <main class="container">
+      <div class="section" id="calendar-section">
+        <h2>Job Calendar</h2>
+        <div id="calendar"></div>
+      </div>
+
+      <div class="section" id="schedule-section">
+        <h2>Today's Schedule</h2>
+        <ul id="todaySchedule"></ul>
+      </div>
+
+  <div class="section" id="addjob-section">
+    <h2>Add New Job</h2>
     <form id="jobForm">
       <label>Name:<br><input type="text" id="jobName"></label><br><br>
       <label>Service Type:</label>
@@ -249,16 +491,29 @@
     </form>
   </div>
 
-  <div class="section">
-    <h2>📨 Quote Requests</h2>
-    <table id="quoteTable">
-      <thead>
-        <tr><th>Name</th><th>Service</th><th>Date</th><th>Notes</th></tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-
+   <div class="section" id="quotes-section">
+        <h2>Quote Requests</h2>
+        <div class="quote-tabs">
+          <button onclick="showQuoteTab('new')" class="active">New</button>
+          <button onclick="showQuoteTab('pending')">Pending</button>
+          <button onclick="showQuoteTab('accepted')">Accepted</button>
+        </div>
+        <div id="quoteTab-new" class="quote-tab-content active">
+          <table id="quoteTable">
+            <thead>
+              <tr><th>Name</th><th>Service</th><th>Date</th><th>Notes</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div id="quoteTab-pending" class="quote-tab-content">
+          <p>No pending quotes yet.</p>
+        </div>
+        <div id="quoteTab-accepted" class="quote-tab-content">
+          <p>No accepted quotes yet.</p>
+        </div>
+      </div>
+    </main>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
@@ -267,7 +522,7 @@
 
     document.addEventListener('DOMContentLoaded', async function() {
       const calendarEl = document.getElementById('calendar');
-      const calendar = new FullCalendar.Calendar(calendarEl, {
+      calendar = new FullCalendar.Calendar(calendarEl, {
   initialView: 'dayGridMonth',
   height: 'auto',
   events: async function(fetchInfo, successCallback, failureCallback) {
@@ -423,7 +678,7 @@ data.forEach(q => {
   }
 
   alert("Job(s) added!");
-  location.reload();
+  calendar.refetchEvents();
 });
     });
 
@@ -461,6 +716,13 @@ if (prioritySelect.value === 'Urgent') {
   flexibleGroup.style.display = 'none';
 }
 });
+
+function showQuoteTab(tab) {
+      document.querySelectorAll('.quote-tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.quote-tabs button').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(`quoteTab-${tab}`).classList.add('active');
+      event.target.classList.add('active');
+    }
   </script>
 </body>
 </html>
